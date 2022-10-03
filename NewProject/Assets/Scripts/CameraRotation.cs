@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraRotation : MonoBehaviour
 {
     [Header("Rotation")]
-    [SerializeField] private Vector2 sens = new Vector2(4f, 4f);
+    [SerializeField] private Vector2 sens = new Vector2(2.5f, 2.5f);
     [SerializeField][Range(0.0f, 0.5f)] private float cameraSmoothTime = 0.03f;
     [SerializeField] private Vector2 rotation = Vector2.zero;
     [SerializeField] private Transform playerTransform;
