@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Control Binds")]
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
-    [SerializeField] private bool crouchToggle = false;
+    public bool crouchToggle = false;
 
     private void Start()
     {
@@ -43,16 +43,22 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 inputDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         inputDir.Normalize();
-        sidewardSpeed = transform.right * inputDir.x * walkSpeed;
 
-        if (Input.GetKey(runKey))
+        if (isCrouching)
+        {
+            currentSpeed = crouchSpeed;
+            sidewardSpeed = transform.right * inputDir.x * currentSpeed;
+        }
+        else if (Input.GetKey(runKey))
         {
             currentSpeed = Mathf.SmoothDamp(currentSpeed, runSpeed, ref currentSpeed, runSmoothTime);
             currentSpeed = Mathf.Clamp(currentSpeed, 0, runSpeed);
+            sidewardSpeed = transform.right * inputDir.x * walkSpeed;
         }
         else
         {
             currentSpeed = walkSpeed;
+            sidewardSpeed = transform.right * inputDir.x * walkSpeed;
         }
 
         forwardSpeed = transform.forward * currentSpeed * inputDir.y;
@@ -68,9 +74,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Crouch()
     {
-        if (Input.GetKey(crouchKey))
+        if (!crouchToggle)
         {
-            isCrouching = true;
+            if (Input.GetKey(crouchKey))
+                isCrouching = true;
+            else
+                isCrouching = false;
+        }
+        else
+            if (Input.GetKeyDown(crouchKey))
+                isCrouching = !isCrouching;
+
+        if (isCrouching)
+        {
             if (characterController.height > crouchHeight)
                 characterController.height -= Time.deltaTime * 3;
             else
@@ -78,7 +94,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            isCrouching = false;
             if (characterController.height < standHeight)
                 characterController.height += Time.deltaTime * 3;
             else
