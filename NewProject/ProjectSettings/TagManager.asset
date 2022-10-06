@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Animatronic
+  - Item
   layers:
   - Default
   - TransparentFX
